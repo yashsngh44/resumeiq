@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Report — {{ analysis.candidate_name }} | ResumeIQ{% endblock %}
+
+{% block content %}
+<div style="max-width: 1140px; margin: 0 auto 4rem;">
+
+  <!-- Executive Header Banner -->
+  <div class="card" style="margin-bottom: 2rem; background: linear-gradient(135deg, rgba(20, 28, 48, 0.85), rgba(11, 15, 25, 0.95)); border-color: rgba(99, 102, 241, 0.3);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+      
+      <div style="display: flex; align-items: center; gap: 1.25rem;">
+        <!-- Candidate Initials Avatar -->
+        <div style="width: 58px; height: 58px; border-radius: var(--radius-sm); background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 800; font-size: 1.5rem; color: #fff; box-shadow: 0 0 20px rgba(99, 102, 241, 0.35);">
+          {{ analysis.candidate_name[:2] | upper }}
+        </div>
+        
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.25rem;">
+            <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.03em;">{{ analysis.candidate_name }}</h1>
+            {% if analysis.is_demo_mode %}
+              <span class="brand-badge" style="background: var(--warning-bg); color: var(--warning-text); border-color: var(--warning-border);">
+                Academic Heuristic Engine
+              </span>
+            {% else %}
+              <span class="brand-badge" style="background: rgba(99, 102, 241, 0.15); color: #c7d2fe; border-color: rgba(99, 102, 241, 0.4);">
+                {{ analysis.model_used }}
+              </span>
+            {% endif %}
+          </div>
+          
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Target Role: <strong style="color: #fff;">{{ analysis.job_title }}</strong>
+            {% if analysis.company_name and analysis.company_name != 'N/A' %}
+              at <strong style="color: #fff;">{{ analysis.company_name }}</strong>
+            {% endif %}
+          </p>
+          
+          <div style="display: flex; gap: 1.5rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim); margin-top: 0.4rem;">
+            <span>File: {{ analysis.resume_filename }}</span>
+            <span>Date: {{ analysis.created_at }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <a href="{{ url_for('main.lab', analysis_id=analysis.id) }}" class="btn btn-primary btn-sm">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+          </svg>
+          Improve Bullets Lab
+        </a>
+        
+        {% if analysis.has_job_description %}
+        <a href="{{ url_for('main.roadmap', analysis_id=analysis.id) }}" class="btn btn-secondary btn-sm">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2" />
+            <polyline points="2 17 12 22 22 17" />
+            <polyline points="2 12 12 17 22 12" />
+          </svg>
+          Career Roadmap
+        </a>
+        {% endif %}
+
+        <div class="dropdown" style="position: relative; display: inline-block;">
+          <button id="export-btn" class="btn btn-outline btn-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Export Report
+          </button>
+          <div id="export-menu" style="display: none; position: absolute; right: 0; top: 115%; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.5rem; z-index: 50; min-width: 180px; box-shadow: var(--shadow-lg); backdrop-filter: blur(16px);">
+            <a href="/api/export/{{ analysis.id }}/markdown" class="nav-link" style="display: block; font-size: 0.85rem; padding: 0.4rem 0.6rem;">Download Markdown (.md)</a>
+            <a href="/api/export/{{ analysis.id }}/json" class="nav-link" style="display: block; font-size: 0.85rem; padding: 0.4rem 0.6rem;">Download JSON (.json)</a>
+            <button onclick="window.print()" class="nav-link" style="width: 100%; text-align: left; background: none; border: none; cursor: pointer; font-size: 0.85rem; padding: 0.4rem 0.6rem;">Print / Save as PDF</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scores Grid -->
+  <div class="scores-grid">
+    
+    <!-- Job Match Score Card -->
+    <div class="score-card">
+      <div class="score-ring">
+        <svg viewBox="0 0 36 36" style="width: 80px; height: 80px; transform: rotate(-90deg);">
+          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3" />
+          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="{% if analysis.job_match_score and analysis.job_match_score >= 75 %}var(--success){% elif analysis.job_match_score and analysis.job_match_score >= 55 %}var(--warning){% else %}var(--danger){% endif %}" stroke-width="3" stroke-dasharray="{{ analysis.job_match_score or 0 }}, 100" stroke-linecap="round" />
+        </svg>
+        <span class="score-number" style="position: absolute;">
+          {% if analysis.job_match_score is not none %}{{ analysis.job_match_score | round | int }}%{% else %}N/A{% endif %}
+        </span>
+      </div>
+      <div class="score-meta">
+        <h4>Job Match Indicator</h4>
+        <p>
+          {% if analysis.has_job_description %}
+            Weighted requirement & preferred skill alignment
+          {% else %}
+            Resume-only evaluation (No JD provided)
+          {% endif %}
+        </p>
+        {% if analysis.report.scoring_breakdown %}
+          <button id="toggle-formula-btn" class="btn btn-outline btn-sm" style="margin-top: 0.6rem; font-size: 0.75rem; padding: 3px 9px;">
+            Inspect Formula
+          </button>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ATS Readiness Card -->
+    <div class="score-card">
+      <div class="score-ring">
+        <svg viewBox="0 0 36 36" style="width: 80px; height: 80px; transform: rotate(-90deg);">
+          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3" />
+          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--primary)" stroke-width="3" stroke-dasharray="{{ analysis.ats_readiness_score | round | int }}, 100" stroke-linecap="round" />
+        </svg>
+        <span class="score-number" style="position: absolute;">{{ analysis.ats_readiness_score | round | int }}%</span>
+      </div>
+      <div class="score-meta">
+        <h4>ATS Readiness Score</h4>
+        <p>{{ analysis.report.ats_details.grade or 'Good' }} formatting & structural health</p>
+        <a href="#ats-audit-section" style="font-size: 0.78rem; color: #a5b4fc; text-decoration: underline; display: inline-block; margin-top: 0.4rem;">
+          View {{ analysis.report.ats_details.checks | length }} rule checks
+        </a>
+      </div>
+    </div>
+
+    <!-- Extracted Profile Breakdown -->
+    <div class="score-card" style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center;">
+      <h4 style="font-size: 0.85rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; font-family: var(--font-heading);">
+        Competency Distribution
+      </h4>
+      <div style="display: flex; gap: 1.5rem; margin-top: 0.6rem; width: 100%;">
+        <div>
+          <span style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: #fff;">
+            {{ analysis.report.matched_skills | length }}
+          </span>
+          <span style="font-size: 0.78rem; color: var(--text-dim); display: block;">Matched</span>
+        </div>
+        <div>
+          <span style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: var(--warning-text);">
+            {{ analysis.report.partial_skills | length }}
+          </span>
+          <span style="font-size: 0.78rem; color: var(--text-dim); display: block;">Bridges</span>
+        </div>
+        <div>
+          <span style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: var(--danger-text);">
+            {{ analysis.report.missing_skills | length }}
+          </span>
+          <span style="font-size: 0.78rem; color: var(--text-dim); display: block;">Gaps</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Transparent Formula Drawer -->
+  {% if analysis.report.scoring_breakdown %}
+  <div id="formula-breakdown-card" class="card" style="display: none; margin-bottom: 2rem; background: var(--bg-surface); border-color: rgba(99,102,241,0.4);">
+    <div class="card-header">
+      <h3 class="card-title" style="font-size: 1.05rem;">
+        Mathematical Scoring Formula & Weight Breakdown
+      </h3>
+      <button onclick="document.getElementById('formula-breakdown-card').style.display='none'" class="btn btn-outline btn-sm">&times; Close</button>
+    </div>
+    <div style="font-family: var(--font-mono); font-size: 0.88rem; background: var(--bg-input); padding: 0.85rem 1.25rem; border-radius: var(--radius-sm); color: #c7d2fe; margin-bottom: 1.25rem; border: 1px solid var(--border-subtle);">
+      {{ analysis.report.scoring_breakdown.formula }}
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.85rem;">
+      <div style="padding: 1rem; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+        <strong style="color: var(--text-muted); display: block; font-size: 0.8rem; text-transform: uppercase;">Required Skills (50%)</strong>
+        <span style="font-family: var(--font-heading); font-size: 1.35rem; font-weight: 800; color: #fff;">{{ analysis.report.scoring_breakdown.sub_scores.required_skills_score }}%</span>
+        <span style="display: block; font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem;">
+          {{ analysis.report.scoring_breakdown.details.matched_required }} full / {{ analysis.report.scoring_breakdown.details.partial_required }} partial of {{ analysis.report.scoring_breakdown.details.total_required }}
+        </span>
+      </div>
+      <div style="padding: 1rem; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+        <strong style="color: var(--text-muted); display: block; font-size: 0.8rem; text-transform: uppercase;">Preferred Skills (25%)</strong>
+        <span style="font-family: var(--font-heading); font-size: 1.35rem; font-weight: 800; color: #fff;">{{ analysis.report.scoring_breakdown.sub_scores.preferred_skills_score }}%</span>
+        <span style="display: block; font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem;">
+          {{ analysis.report.scoring_breakdown.details.matched_preferred }} matched of {{ analysis.report.scoring_breakdown.details.total_preferred }}
+        </span>
+      </div>
+      <div style="padding: 1rem; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+        <strong style="color: var(--text-muted); display: block; font-size: 0.8rem; text-transform: uppercase;">Experience Alignment (15%)</strong>
+        <span style="font-family: var(--font-heading); font-size: 1.35rem; font-weight: 800; color: #fff;">{{ analysis.report.scoring_breakdown.sub_scores.experience_alignment_score }}%</span>
+        <span style="display: block; font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem;">Seniority & timeline heuristic</span>
+      </div>
+      <div style="padding: 1rem; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+        <strong style="color: var(--text-muted); display: block; font-size: 0.8rem; text-transform: uppercase;">ATS Formatting (10%)</strong>
+        <span style="font-family: var(--font-heading); font-size: 1.35rem; font-weight: 800; color: #fff;">{{ analysis.report.scoring_breakdown.sub_scores.ats_formatting_score }}%</span>
+        <span style="display: block; font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem;">Deterministic layout audit</span>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Executive Summary Card -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div class="card-header">
+      <h2 class="card-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="16" x2="12" y2="12" />
+          <line x1="12" y1="8" x2="12.01" y2="8" />
+        </svg>
+        Executive Assessment Summary
+      </h2>
+    </div>
+    <p style="font-size: 1.05rem; color: #f1f5f9; line-height: 1.7; font-weight: 400;">
+      {{ analysis.summary }}
+    </p>
+
+    <!-- Strengths & Growth Areas Split -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; margin-top: 1.75rem;">
+      <div style="background-color: var(--bg-surface); padding: 1.5rem; border-radius: var(--radius-sm); border-left: 3px solid var(--success);">
+        <h4 style="font-size: 1rem; font-weight: 700; color: var(--success-text); margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Demonstrated Strengths
+        </h4>
+        <ul style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
+          {% for s in analysis.report.strengths %}
+            <li style="margin-bottom: 0.5rem;">{{ s }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div style="background-color: var(--bg-surface); padding: 1.5rem; border-radius: var(--radius-sm); border-left: 3px solid var(--warning);">
+        <h4 style="font-size: 1rem; font-weight: 700; color: var(--warning-text); margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Key Areas for Growth
+        </h4>
+        <ul style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
+          {% for w in analysis.report.weaknesses %}
+            <li style="margin-bottom: 0.5rem;">{{ w }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature B: Job Match & Skill Gap Engine -->
+  {% if analysis.has_job_description %}
+  <div class="card" style="margin-bottom: 2rem;">
+    <div class="card-header">
+      <div>
+        <h2 class="card-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+          </svg>
+          Job-Specific Skill Gap Matrix
+        </h2>
+        <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 0.25rem;">
+          Every matched skill cites verifiable resume evidence.
+        </p>
+      </div>
+      <div style="display: flex; gap: 0.4rem;">
+        <button class="btn btn-outline btn-sm filter-pill active" data-filter="all">All Skills</button>
+        <button class="btn btn-outline btn-sm filter-pill" data-filter="matched">Matched ({{ analysis.report.matched_skills | length }})</button>
+        <button class="btn btn-outline btn-sm filter-pill" data-filter="partial">Partial ({{ analysis.report.partial_skills | length }})</button>
+        <button class="btn btn-outline btn-sm filter-pill" data-filter="missing">Gaps ({{ analysis.report.missing_skills | length }})</button>
+      </div>
+    </div>
+
+    <!-- Skills List -->
+    <div id="skills-container" style="display: flex; flex-direction: column; gap: 0.85rem;">
+      
+      <!-- Matched Skills -->
+      {% for item in analysis.report.matched_skills %}
+      <div class="evidence-card skill-row" data-type="matched" style="border-left: 3px solid var(--success);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+          <div>
+            <strong style="color: #fff; font-size: 1rem; font-family: var(--font-heading);">{{ item.skill }}</strong>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); margin-left: 0.6rem;">{{ item.category }} &bull; {{ item.type }}</span>
+          </div>
+          <span class="skill-chip chip-matched">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            Evidence Verified
+          </span>
+        </div>
+        {% if item.evidence %}
+        <div class="evidence-quote">
+          {{ item.evidence }}
+        </div>
+        {% endif %}
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem;">
+          {{ item.explanation }}
+        </p>
+      </div>
+      {% endfor %}
+
+      <!-- Partial Skills -->
+      {% for item in analysis.report.partial_skills %}
+      <div class="evidence-card skill-row" data-type="partial" style="border-left: 3px solid var(--warning);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+          <div>
+            <strong style="color: #fff; font-size: 1rem; font-family: var(--font-heading);">{{ item.skill }}</strong>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); margin-left: 0.6rem;">{{ item.category }} &bull; {{ item.type }}</span>
+          </div>
+          <span class="skill-chip chip-partial">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Knowledge Bridge
+          </span>
+        </div>
+        {% if item.evidence %}
+        <div class="evidence-quote">
+          {{ item.evidence }}
+        </div>
+        {% endif %}
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem;">
+          {{ item.explanation }}
+        </p>
+      </div>
+      {% endfor %}
+
+      <!-- Missing Skills -->
+      {% for item in analysis.report.missing_skills %}
+      <div class="evidence-card skill-row" data-type="missing" style="border-left: 3px solid var(--danger);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+          <div>
+            <strong style="color: #fff; font-size: 1rem; font-family: var(--font-heading);">{{ item.skill }}</strong>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); margin-left: 0.6rem;">{{ item.category }} &bull; {{ item.type }}</span>
+          </div>
+          <span class="skill-chip chip-missing">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Missing Evidence
+          </span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem;">
+          {{ item.explanation }}
+        </p>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Feature E: Deterministic ATS Readiness Checks -->
+  <div id="ats-audit-section" class="card" style="margin-bottom: 2rem;">
+    <div class="card-header">
+      <div>
+        <h2 class="card-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          ATS Structural & Formatting Audit
+        </h2>
+        <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 0.25rem;">
+          Mechanical rules evaluating contact presence, section titles, and text clean extraction.
+        </p>
+      </div>
+      <div style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; color: #818cf8;">
+        Score: {{ analysis.ats_readiness_score }} / 100
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Check</th>
+            <th>Category</th>
+            <th>Findings</th>
+            <th>Remediation Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for check in analysis.report.ats_details.checks %}
+          <tr>
+            <td>
+              {% if check.status == 'passed' %}
+                <span class="skill-chip chip-matched" style="padding: 2px 7px; font-size: 0.72rem;">PASSED</span>
+              {% elif check.status == 'warning' %}
+                <span class="skill-chip chip-partial" style="padding: 2px 7px; font-size: 0.72rem;">WARNING</span>
+              {% else %}
+                <span class="skill-chip chip-missing" style="padding: 2px 7px; font-size: 0.72rem;">FAILED</span>
+              {% endif %}
+            </td>
+            <td><strong>{{ check.name }}</strong></td>
+            <td style="color: var(--text-dim); font-size: 0.82rem;">{{ check.category }}</td>
+            <td style="font-size: 0.88rem;">{{ check.detail }}</td>
+            <td style="font-size: 0.85rem; color: var(--text-muted);">{{ check.recommendation }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <p style="font-size: 0.78rem; color: var(--text-dim); margin-top: 1rem; border-top: 1px solid var(--border-subtle); padding-top: 0.85rem;">
+      {{ analysis.report.ats_details.disclaimer }}
+    </p>
+  </div>
+
+  <!-- Bottom Nav CTA -->
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">
+      &larr; Analyze Another Resume
+    </a>
+
+    <div style="display: flex; gap: 0.8rem;">
+      <a href="{{ url_for('main.lab', analysis_id=analysis.id) }}" class="btn btn-primary">
+        Open Resume Improvement Lab &rarr;
+      </a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/report.js') }}"></script>
+{% endblock %}

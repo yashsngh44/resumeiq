@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis History & Comparison — ResumeIQ{% endblock %}
+
+{% block content %}
+<div style="max-width: 1140px; margin: 0 auto 4rem;">
+
+  <!-- Page Header -->
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem;">
+    <div>
+      <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.03em;">Saved Analysis History</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.2rem;">
+        Review previous diagnostic reports, launch multi-job comparisons, or securely purge records.
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+      <button id="compare-selected-btn" class="btn btn-primary btn-sm" disabled title="Select exactly 2 analyses to compare">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <polyline points="16 3 21 3 21 8"/>
+          <line x1="4" y1="20" x2="21" y2="3"/>
+          <polyline points="21 16 21 21 16 21"/>
+          <line x1="15" y1="15" x2="21" y2="21"/>
+        </svg>
+        Compare Selected (0/2)
+      </button>
+
+      <button id="purge-all-btn" class="btn btn-danger btn-sm" title="Permanently delete all stored analyses from local database">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+        Purge All Records
+      </button>
+    </div>
+  </div>
+
+  <!-- History Records Container -->
+  <div class="card" style="padding: 0; overflow: hidden;">
+    <div id="history-loading" style="padding: 3rem; text-align: center; color: var(--text-muted);">
+      <div class="spinner" style="width: 36px; height: 36px; margin: 0 auto 1rem;"></div>
+      Loading saved records from SQLite database...
+    </div>
+
+    <!-- Empty State -->
+    <div id="history-empty" style="display: none; padding: 4rem 1.5rem; text-align: center;">
+      <div style="width: 56px; height: 56px; border-radius: 50%; background: var(--bg-surface); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; color: var(--text-dim); border: 1px solid var(--border-subtle);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: #fff;">No Saved Analyses Found</h3>
+      <p style="font-size: 0.92rem; color: var(--text-muted); max-width: 480px; margin: 0 auto 1.75rem;">
+        You haven't run any resume evaluations yet. Upload a resume to populate your diagnostic archive.
+      </p>
+      <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-sm">
+        Analyze First Resume &rarr;
+      </a>
+    </div>
+
+    <!-- Table of records -->
+    <div id="history-table-wrapper" class="table-responsive" style="display: none;">
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width: 45px; text-align: center;">Select</th>
+            <th>Candidate & File</th>
+            <th>Target Role & Company</th>
+            <th>Job Match</th>
+            <th>ATS Score</th>
+            <th>Engine</th>
+            <th>Evaluated</th>
+            <th style="text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="history-tbody">
+          <!-- Dynamically populated via history.js -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="font-size: 0.82rem; color: var(--text-dim); margin-top: 1rem; display: flex; align-items: center; gap: 0.4rem;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    Select any 2 analyses to evaluate how your profile matches two distinct job descriptions side-by-side.
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/history.js') }}"></script>
+{% endblock %}

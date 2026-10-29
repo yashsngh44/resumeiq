@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Personalized Career Roadmap — {{ analysis.candidate_name }} | ResumeIQ{% endblock %}
+
+{% block content %}
+<div style="max-width: 1140px; margin: 0 auto 4rem;">
+
+  <!-- Header Card -->
+  <div class="card" style="margin-bottom: 2rem; background: linear-gradient(135deg, rgba(20, 28, 48, 0.85), rgba(11, 15, 25, 0.95)); border-color: rgba(99, 102, 241, 0.3);">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.3rem;">
+          <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.03em;">Personalized Career Roadmap</h1>
+          <span class="brand-badge" style="background: rgba(99, 102, 241, 0.15); color: #c7d2fe; border-color: rgba(99, 102, 241, 0.4);">
+            Actionable Skill Bridges
+          </span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Candidate: <strong style="color: #fff;">{{ analysis.candidate_name }}</strong> &bull; Target Role: <strong style="color: #fff;">{{ analysis.job_title }}</strong>
+        </p>
+      </div>
+
+      <a href="{{ url_for('main.report', analysis_id=analysis.id) }}" class="btn btn-secondary btn-sm">
+        &larr; Back to Report
+      </a>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem; flex-wrap: wrap;">
+      <button class="btn btn-outline btn-sm roadmap-filter active" data-priority="all">
+        All Roadmap Steps ({{ analysis.report.roadmap | length }})
+      </button>
+      <button class="btn btn-outline btn-sm roadmap-filter" data-priority="high">
+        High Priority Gaps
+      </button>
+      <button class="btn btn-outline btn-sm roadmap-filter" data-priority="medium">
+        Medium Bridges
+      </button>
+      <button class="btn btn-outline btn-sm roadmap-filter" data-priority="low">
+        Optional Enhancements
+      </button>
+    </div>
+  </div>
+
+  <!-- Roadmap Cards Grid -->
+  {% if analysis.report.roadmap %}
+  <div class="roadmap-grid" id="roadmap-grid">
+    {% for step in analysis.report.roadmap %}
+    <div class="roadmap-card priority-{{ step.priority_code }}" data-priority="{{ step.priority_code }}">
+      
+      <div>
+        <div class="roadmap-header">
+          <span class="roadmap-badge badge-{{ step.priority_code }}">
+            {{ step.priority | upper }}
+          </span>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);">
+            {{ step.category }} &bull; {{ step.tag }}
+          </span>
+        </div>
+
+        <h3 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 0.75rem; font-family: var(--font-heading);">
+          {{ step.skill }}
+        </h3>
+
+        <!-- Why It Matters -->
+        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.2rem;">
+          <strong style="color: #e2e8f0;">Why it matters:</strong> {{ step.why_it_matters }}
+        </p>
+
+        <!-- Beginner Action -->
+        <div style="background-color: var(--bg-surface); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 0.85rem; border: 1px solid var(--border-subtle);">
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: #818cf8; text-transform: uppercase; margin-bottom: 0.3rem;">
+            Step 1: First Practical Action
+          </div>
+          <p style="font-size: 0.85rem; color: #f1f5f9; line-height: 1.5;">
+            {{ step.beginner_action }}
+          </p>
+        </div>
+
+        <!-- Portfolio Mini-Project -->
+        <div style="background-color: var(--bg-surface); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.2rem; border: 1px solid var(--border-subtle);">
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--accent-violet); text-transform: uppercase; margin-bottom: 0.3rem;">
+            Step 2: Portfolio Mini-Project
+          </div>
+          <p style="font-size: 0.85rem; color: #f1f5f9; line-height: 1.5;">
+            {{ step.practical_project }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Footer Info -->
+      <div style="border-top: 1px solid var(--border-subtle); padding-top: 0.85rem; margin-top: 0.5rem;">
+        <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.6rem;">
+          <strong>Estimated effort:</strong> {{ step.estimated_effort }}
+        </div>
+        {% if step.resource_url %}
+        <a href="{{ step.resource_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="width: 100%; text-align: center; justify-content: center; font-size: 0.8rem;">
+          <span>{{ step.resource_title }}</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+        {% endif %}
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card" style="text-align: center; padding: 3rem 1rem;">
+    <h3 style="font-size: 1.3rem; color: #fff;">No Actionable Skill Gaps Found</h3>
+    <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.5rem;">
+      Your resume demonstrates strong evidence for all detected requirements in this job description.
+    </p>
+    <a href="{{ url_for('main.report', analysis_id=analysis.id) }}" class="btn btn-primary btn-sm" style="margin-top: 1.5rem;">
+      Back to Report
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/roadmap.js') }}"></script>
+{% endblock %}

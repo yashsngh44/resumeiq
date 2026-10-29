@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ResumeIQ — AI Resume Analyzer & Career Copilot{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta name="description" content="Evidence-based job-specific skill gap analysis, ATS formatting audits, and personalized career roadmaps.">
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="app-header">
+    <div class="nav-container">
+      <a href="{{ url_for('main.index') }}" class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" stroke-width="2.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <span>ResumeIQ</span>
+        <span class="brand-badge">Academic Copilot</span>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li>
+            <a href="{{ url_for('main.dashboard') }}" class="nav-link {% if request.path == '/dashboard' %}active{% endif %}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Analyze Resume
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('main.history') }}" class="nav-link {% if request.path in ['/history', '/compare'] %}active{% endif %}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              History & Compare
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('main.settings') }}" class="nav-link {% if request.path == '/settings' %}active{% endif %}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Settings
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <div id="system-status-pill" class="status-pill" title="Engine Operating Status">
+          <span class="status-dot demo"></span>
+          <span id="status-model-text">Checking engine...</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Content Container -->
+  <main class="main-content">
+    <div id="global-demo-alert" class="demo-banner" style="display: none;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 1.1rem;">⚡</span>
+        <div>
+          <strong>Academic Demonstration Mode Active:</strong> Running local deterministic parsing & heuristic matching. 
+          <a href="{{ url_for('main.settings') }}">Add Gemini API Key in Settings</a> for live LLM reasoning.
+        </div>
+      </div>
+      <button onclick="document.getElementById('global-demo-alert').style.display='none'" style="background:none; border:none; color:#fde68a; cursor:pointer; font-size:1.2rem;">&times;</button>
+    </div>
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Toast Container -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- Loading Screen Overlay with Animated Progress -->
+  <div id="loading-overlay" aria-hidden="true">
+    <div class="spinner"></div>
+    <h3 style="font-size: 1.35rem; font-weight: 800; color: #fff; font-family: var(--font-heading);">
+      Processing Resume Intelligence
+    </h3>
+    <p id="loading-step-text" class="loading-step">Extracting document text with PyMuPDF...</p>
+    
+    <div style="width: 280px; height: 4px; background: rgba(255,255,255,0.1); border-radius: var(--radius-full); margin-top: 1.25rem; overflow: hidden; position: relative;">
+      <div style="position: absolute; top:0; left:0; bottom:0; width: 45%; background: linear-gradient(90deg, #6366f1, #8b5cf6); border-radius: var(--radius-full); animation: pulseWidth 2s ease-in-out infinite alternate;"></div>
+    </div>
+    
+    <p style="font-size: 0.8rem; color: #64748b; margin-top: 1.25rem;">
+      Auditing mechanical ATS compliance, mapping skill taxonomies, and generating roadmaps.
+    </p>
+  </div>
+
+  <style>
+    @keyframes pulseWidth {
+      0% { left: 0%; width: 25%; }
+      100% { left: 75%; width: 25%; }
+    }
+  </style>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div style="max-width: 1240px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <span style="font-family: var(--font-heading); font-weight: 700; color: #fff;">ResumeIQ</span>
+        <span style="color: var(--text-dim);">&bull;</span>
+        <span>AI Resume Analyzer & Career Copilot</span>
+      </div>
+      <div style="font-size: 0.82rem; color: var(--text-dim);">
+        Powered by PyMuPDF, python-docx & Google Gemini &bull; <a href="{{ url_for('main.settings') }}">Privacy Disclosures</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

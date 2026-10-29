@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}ResumeIQ — Evidence-Based AI Resume Analyzer & Career Copilot{% endblock %}
+
+{% block content %}
+<div style="max-width: 1100px; margin: 1rem auto 4rem;">
+
+  <!-- Hero Section -->
+  <div style="text-align: center; padding: 3.5rem 1rem 3rem; position: relative;">
+    
+    <!-- Top Pill Badge -->
+    <div style="display: inline-flex; align-items: center; gap: 0.6rem; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: var(--radius-full); padding: 5px 16px; font-size: 0.82rem; font-family: var(--font-heading); font-weight: 600; color: #c7d2fe; margin-bottom: 2rem; box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);">
+      <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 8px var(--primary);"></span>
+      <span>Evidence-Grounded AI Career Diagnostics</span>
+      <span style="color: var(--text-dim);">&bull;</span>
+      <span style="color: #a5b4fc;">Zero Metric Fabrication</span>
+    </div>
+
+    <!-- Main Headline -->
+    <h1 style="font-size: 3.5rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.5rem; letter-spacing: -0.035em;">
+      Elevate Your Resume Alignment With<br>
+      <span style="background: linear-gradient(135deg, #ffffff 10%, #a5b4fc 50%, #818cf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        Transparent AI & Verified Evidence
+      </span>
+    </h1>
+
+    <p style="font-size: 1.2rem; color: var(--text-muted); max-width: 760px; margin: 0 auto 2.5rem; line-height: 1.6; font-weight: 400;">
+      Stop relying on black-box keyword stuffers. ResumeIQ audits mechanical ATS formatting, maps required competencies with verifiable quotes, and prescribes actionable career roadmaps.
+    </p>
+
+    <!-- CTAs -->
+    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 3.5rem;">
+      <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary" style="padding: 0.85rem 2rem; font-size: 1.05rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="17 8 12 3 7 8" />
+          <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
+        Upload Resume & Analyze
+      </a>
+      <a href="{{ url_for('main.history') }}" class="btn btn-secondary" style="padding: 0.85rem 1.8rem; font-size: 1.05rem;">
+        View History & Compare
+      </a>
+    </div>
+
+    <!-- Interactive Mockup Card -->
+    <div class="card" style="max-width: 900px; margin: 0 auto; text-align: left; background: linear-gradient(180deg, rgba(20, 28, 48, 0.8), rgba(11, 15, 25, 0.95)); border-color: rgba(99, 102, 241, 0.3); box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.15); padding: 2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <span style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444;"></span>
+          <span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b;"></span>
+          <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981;"></span>
+          <span style="margin-left: 0.5rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim);">resumeiq-diagnostic-preview.json</span>
+        </div>
+        <span class="skill-chip chip-matched" style="font-size: 0.75rem; padding: 2px 10px;">
+          92% Evidence Match
+        </span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <!-- Left Side: Skill Quote Citation -->
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1.25rem;">
+          <div style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--success-text); text-transform: uppercase; margin-bottom: 0.4rem;">
+            &bull; Verified Requirement Citation
+          </div>
+          <h4 style="font-size: 1rem; color: #fff; margin-bottom: 0.4rem;">Python & REST Microservices</h4>
+          <p style="font-size: 0.85rem; color: #cbd5e1; font-style: italic; background: rgba(99,102,241,0.08); padding: 0.5rem 0.75rem; border-left: 3px solid var(--primary); border-radius: 0 4px 4px 0;">
+            &ldquo;Developed and maintained 8+ RESTful microservice endpoints using Python and Flask, improving response latency.&rdquo;
+          </p>
+        </div>
+
+        <!-- Right Side: Honest XYZ Bullet Rewrite -->
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1.25rem;">
+          <div style="font-size: 0.75rem; font-family: var(--font-mono); color: #c084fc; text-transform: uppercase; margin-bottom: 0.4rem;">
+            &bull; Google XYZ Formula Rewrite
+          </div>
+          <h4 style="font-size: 1rem; color: #fff; margin-bottom: 0.4rem;">Anti-Fabrication Metric Prompt</h4>
+          <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5;">
+            Engineered automated database indexing for PostgreSQL <span style="background: rgba(245, 158, 11, 0.2); color: #fde68a; padding: 1px 6px; border-radius: 4px; font-weight: 600;">[Add real figure: e.g. reducing query latency by X%]</span>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Key Pillars Section -->
+  <div style="margin-top: 4rem;">
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <h2 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;">Designed for Total Transparency</h2>
+      <p style="color: var(--text-dim); font-size: 1rem; margin-top: 0.5rem;">
+        Four engineering principles that separate ResumeIQ from superficial AI wrappers.
+      </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+      
+      <!-- Card 1 -->
+      <div class="card">
+        <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: rgba(99, 102, 241, 0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: #fff;">PyMuPDF Extraction</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+          Native C-level parsing extracts pure UTF-8 text from PDFs and DOCX files without layout corruption or dropped paragraphs.
+        </p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card">
+        <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: rgba(16, 185, 129, 0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: #fff;">Grounded Quote Citations</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+          Every matched requirement points directly to the supporting sentence in your resume, eliminating hallucinated qualifications.
+        </p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card">
+        <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: rgba(245, 158, 11, 0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: #fff;">Rule-Based ATS Auditor</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+          Audits email, phone, headings, word density, and formatting rules deterministically—strictly separated from AI interpretation.
+        </p>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="card">
+        <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); background: rgba(139, 92, 246, 0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; color: var(--accent-violet); border: 1px solid rgba(139, 92, 246, 0.3);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: #fff;">Actionable Roadmap</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+          Converts missing skills into realistic practice hours, beginner tasks, and canonical documentation links with zero broken URLs.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Documented Formula Banner -->
+  <div class="card" style="margin-top: 3.5rem; background: linear-gradient(180deg, var(--bg-surface), var(--bg-secondary)); border: 1px solid var(--border-color); text-align: center; padding: 2.5rem 1.5rem;">
+    <h3 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.6rem;">
+      Documented Linear Scoring Formula
+    </h3>
+    <p style="font-size: 0.92rem; color: var(--text-muted); max-width: 650px; margin: 0 auto 1.5rem;">
+      Transparent weights ensure applicants know exactly where their score comes from:
+    </p>
+
+    <div style="display: inline-block; background: var(--bg-input); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: var(--radius-sm); padding: 0.85rem 1.75rem; font-family: var(--font-mono); font-size: 0.95rem; color: #c7d2fe; box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);">
+      JobMatch = (0.50 &times; RequiredSkills) + (0.25 &times; PreferredSkills) + (0.15 &times; ExperienceAlignment) + (0.10 &times; ATSScore)
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Settings & Privacy Safeguards — ResumeIQ{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto 4rem;">
+
+  <!-- Page Header -->
+  <div style="margin-bottom: 2.5rem;">
+    <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.03em;">Settings & Privacy Safeguards</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.2rem;">
+      Configure Gemini API credentials, audit model parameters, and review zero-retention data safeguards.
+    </p>
+  </div>
+
+  <!-- Card 1: Gemini API Configuration -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div class="card-header">
+      <h2 class="card-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+        Google Gemini AI Credentials
+      </h2>
+      <div id="key-badge-status" class="status-pill">
+        <span class="status-dot demo"></span>
+        <span id="key-status-text">Loading...</span>
+      </div>
+    </div>
+
+    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6;">
+      ResumeIQ integrates with Google Gemini for advanced semantic reasoning and bullet point optimization. 
+      You can configure a key for your local session or supply it via <code>GEMINI_API_KEY</code> in your <code>.env</code> file.
+    </p>
+
+    <div class="form-group">
+      <label for="settings-api-key" class="form-label">Google Gemini API Key</label>
+      <div style="display: flex; gap: 0.5rem;">
+        <input type="password" id="settings-api-key" class="form-control" placeholder="AIzaSy..." style="font-family: var(--font-mono);">
+        <button type="button" id="toggle-key-visibility" class="btn btn-outline btn-sm" title="Show/Hide Key">
+          Show
+        </button>
+      </div>
+      <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.5rem;">
+        Keys are held in secure session state and never committed to version control.
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+      <button type="button" id="save-key-btn" class="btn btn-primary btn-sm">
+        Save & Verify Key
+      </button>
+      <button type="button" id="clear-key-btn" class="btn btn-outline btn-sm">
+        Clear Custom Key
+      </button>
+    </div>
+
+    <div style="margin-top: 1.75rem; border-top: 1px solid var(--border-subtle); padding-top: 1.25rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem;">
+      <span style="color: var(--text-muted);">Configured Gemini Model:</span>
+      <span id="active-model-name" style="font-family: var(--font-mono); color: #c7d2fe; background: var(--bg-surface); padding: 3px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+        gemini-2.5-flash
+      </span>
+    </div>
+  </div>
+
+  <!-- Card 2: Privacy Safeguards & Data Rights -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div class="card-header">
+      <h2 class="card-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        Privacy Architecture & Data Rights
+      </h2>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 1.25rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
+      <div>
+        <strong style="color: #fff;">1. Zero Permanent Resume File Retention:</strong>
+        <p>Uploaded PDF and DOCX files are extracted directly into memory and deleted from the filesystem immediately after parsing.</p>
+      </div>
+
+      <div>
+        <strong style="color: #fff;">2. External AI Processing Notice:</strong>
+        <p>When live Gemini mode is enabled, parsed text is passed securely over TLS to Google's Gemini API for semantic evaluation. In Academic Demo Mode, no external network requests are dispatched.</p>
+      </div>
+
+      <div>
+        <strong style="color: #fff;">3. SQLite Persistence Scope:</strong>
+        <p>Your local database (<code>instance/resumeiq.db</code>) stores only the structured analysis results (scores, matched skills, bullet rewrites) to enable history review and multi-job comparisons.</p>
+      </div>
+
+      <div>
+        <strong style="color: #fff;">4. Data Purge & Right to be Forgotten:</strong>
+        <p>You can delete any individual analysis report or wipe all records permanently at any time.</p>
+      </div>
+    </div>
+
+    <!-- Danger Zone: Purge All Data -->
+    <div style="margin-top: 2rem; border-top: 1px solid rgba(239, 68, 68, 0.3); padding-top: 1.5rem;">
+      <h3 style="font-size: 1rem; font-weight: 700; color: #f87171; margin-bottom: 0.4rem;">
+        Danger Zone: Complete Data Purge
+      </h3>
+      <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.25rem;">
+        Permanently wipes all saved evaluations, scores, and bullet rewrites from your local database.
+      </p>
+      <button type="button" id="purge-data-settings-btn" class="btn btn-danger btn-sm">
+        Purge All Stored Data
+      </button>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}
